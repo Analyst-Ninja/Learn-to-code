@@ -1,0 +1,7 @@
+# t=(1,2,3,4,5,1,1,1)
+# # a=t.count(1)
+# print(t.count(1))
+# print(t.index(3))
+t1=(1,2,5,0,0,0,0,0,5,4,54,5)
+a=t1.count(0)
+print(a)

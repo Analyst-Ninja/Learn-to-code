@@ -1,0 +1,12 @@
+story='once upon a time in mumbai'
+# print(len(story))
+# print(story.endswith('bai'))
+# print(story.startswith('L'))
+# a=story.split(' ')
+# print(a)
+# print(story.count(' '))
+# d=story.capitalize()
+# print(d)
+# print(story.find('m'))
+e=story.replace('once','Harry')
+print(e)
