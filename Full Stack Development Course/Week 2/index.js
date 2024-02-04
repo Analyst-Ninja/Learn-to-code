@@ -1,16 +1,24 @@
 const express = require("express");
 const app = express();
 const port = 3000;
-const n = 100;
+// const n = 100;
 
 function handleFirstRequest(req, res) {
-  //   res.send(');
+  let counter = req.query.counter;
   res.send(
-    `Hello World!!! <br> Answer for sum from 1 to ${n} is ${calculateSum(n)}`
+    `Hello World!!! Answer for sum from 1 to ${counter} is ${calculateSum(
+      counter
+    )}`
   );
 }
 
-app.get("/", handleFirstRequest);
+app.get("/handleSum", handleFirstRequest);
+
+function createUserRequest(req, res) {
+  res.send("Hi, The user has been created");
+}
+
+app.post("/createUser", createUserRequest);
 
 function started() {
   console.log(`Example App is listening on ${port}`);
