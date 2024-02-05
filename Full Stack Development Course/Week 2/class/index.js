@@ -4,14 +4,13 @@ const port = 3000;
 // const n = 100;
 
 function handleFirstRequest(req, res) {
-  // let counter = req.query.counter;
-  console.log(req.headers);
-  let counter = req.headers.counter;
-  res.send(
-    `Hello World!!! Answer for sum from 1 to ${counter} is ${calculateSum(
-      counter
-    )}`
-  );
+  let counter = req.query.counter;
+  // console.log(req.headers);
+  // let counter = req.headers.counter;
+  let ans = {
+    sum: calculateSum(counter),
+  };
+  res.send(ans);
 }
 
 app.get("/handleSum", handleFirstRequest);
