@@ -41,7 +41,7 @@ app.get("/files", (req, res) => {
 
 app.get("/files/:filename", (req, res) => {
   fs.readFile(`./files/${req.params.filename}`, "utf-8", (err, data) => {
-    if (err) res.status(404).send(`File not found`);
+    if (err) res.status(404).send("File not found");
     else {
       res.send(data);
     }

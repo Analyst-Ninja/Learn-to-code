@@ -29,9 +29,81 @@
   Testing the server - run `npm run test-authenticationServer` command in terminal
  */
 
-const express = require("express")
+const express = require("express");
 const PORT = 3000;
 const app = express();
+const bodyParser = require("body-parser");
 // write your logic here, DONT WRITE app.listen(3000) when you're running tests, the tests will automatically start the server
+
+let users = [];
+
+function findIndex(users, userName) {
+  for (let i = 0; i < users.length; i++) {
+    if (users[i].username === userName) return i;
+  }
+  return -1;
+}
+
+function removeAtIndex(users, userName) {
+  let newUsers = [];
+  for (let i = 0; i < users.length; i++) {
+    if (users[i].username !== userName) newUsers.push(users[i]);
+  }
+  return newUsers;
+}
+
+app.use(bodyParser.json());
+
+app.post("/signup", (req, res) => {
+  if (findIndex(users, req.body.username) === -1) {
+    users.push({
+      id: Math.floor(Math.random() * 10000000 + 1),
+      username: req.body.username,
+      password: req.body.password,
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      email: req.body.email,
+    });
+    console.log(users);
+    res.status(201).send("Signup successful");
+  } else res.status(400).send("User Already Exists");
+});
+
+app.post("/login", (req, res) => {
+  let index = findIndex(users, req.body.username);
+  if (index !== -1) {
+    if (
+      users[index].email === req.body.email &&
+      users[index].password === req.body.password
+    ) {
+      res.status(200).send({
+        firstName: users[index].firstName,
+        lastName: users[index].lastName,
+        email: users[index].email,
+      });
+    } else {
+      res.status(401).send("Unauthorized");
+    }
+  } else res.status(401).send("User not exists - Please Signup");
+});
+
+app.get("/data", (req, res) => {
+  let index = findIndex(users, req.headers.username);
+  if (index !== -1) {
+    if (
+      users[index].username === req.headers.username &&
+      users[index].password === req.headers.password
+    ) {
+      let allData = users;
+      res.status(200).send({ users: allData });
+    } else res.status(401).send("Unauthorized");
+  } else res.status(401).send("User not exists - Please Signup");
+});
+
+app.use((req, res, next) => {
+  res.status(404).send();
+});
+
+app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 
 module.exports = app;
