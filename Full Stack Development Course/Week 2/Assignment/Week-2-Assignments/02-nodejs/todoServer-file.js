@@ -41,86 +41,112 @@
  */
 const express = require("express");
 const bodyParser = require("body-parser");
+const fs = require("fs");
+const { stringify } = require("querystring");
 
 const app = express();
 const port = 3000;
 
-let todos = [];
-let todoId = 0;
-
 app.use(bodyParser.json());
 
 function createTodo(req, res) {
-  todoId = Math.round(Math.random() * 10000000 + 1, 0);
-
   let todoObj = {
-    id: todoId,
+    id: Math.round(Math.random() * 10000000 + 1, 0),
     title: req.body.title,
     completed: req.body.completed || false,
     description: req.body.description,
   };
-  todos.push(todoObj);
-  res.status(201).send("To Do Created");
+  fs.readFile("todos.json", "utf-8", (err, data) => {
+    if (err) throw err;
+
+    let todos = JSON.parse(data);
+    todos.push(todoObj);
+    fs.writeFile("todos.json", JSON.stringify(todos), "utf-8", () =>
+      res.status(201).json(todoObj)
+    );
+  });
 }
 
 app.post("/todos", createTodo);
 
 function getAllTodos(req, res) {
-  res.status(200).send(todos);
+  fs.readFile("todos.json", "utf-8", (err, data) => {
+    if (err) throw err;
+
+    let todos = JSON.parse(data);
+    res.status(200).json(todos);
+  });
 }
 app.get("/todos", getAllTodos);
 
 function getTodo(req, res) {
-  let found = false;
-  if (todos.length !== 0) {
-    for (let i = 0; i < todos.length; i++) {
-      if (todos[i].id === parseInt(req.params.id)) {
-        found = true;
-        res.status(200).send(todos[i]);
+  fs.readFile("todos.json", "utf-8", (err, data) => {
+    if (err) throw err;
+    const todos = JSON.parse(data);
+    let found = false;
+    if (todos.length !== 0) {
+      for (let i = 0; i < todos.length; i++) {
+        if (todos[i].id === parseInt(req.params.id)) {
+          found = true;
+          res.status(200).send(todos[i]);
+        }
       }
     }
-  }
-  if (found === false) {
-    res.status(404).send(`To Do with ${parseInt(req.params.id)} not found`);
-  }
+    if (found === false) {
+      res.status(404).send(`To Do with ${parseInt(req.params.id)} not found`);
+    }
+  });
 }
 
 app.get("/todos/:id", getTodo);
 
 function updateTodo(req, res) {
-  let found = false;
-  if (todos.length !== 0) {
-    for (let i = 0; i < todos.length; i++) {
-      if (todos[i].id === parseInt(req.params.id)) {
-        todos[i].title = req.body.title || todos[i].title;
-        todos[i].completed = req.body.completed || todos[i].completed;
-        todos[i].description = req.body.description || todos[i].description;
-        found = true;
-        res.status(200).send(`Updated To Do with ID- ${todos[i].id}`);
+  fs.readFile("todos.json", "utf-8", (err, data) => {
+    if (err) throw err;
+    const todos = JSON.parse(data);
+    let found = false;
+    if (todos.length !== 0) {
+      for (let i = 0; i < todos.length; i++) {
+        if (todos[i].id === parseInt(req.params.id)) {
+          todos[i].title = req.body.title || todos[i].title;
+          todos[i].completed = req.body.completed || todos[i].completed;
+          todos[i].description = req.body.description || todos[i].description;
+          found = true;
+          // console.log(found, todos[i]);
+          fs.writeFile("todos.json", JSON.stringify(todos), "utf-8", () => {
+            res.status(200).json(todos[i]);
+          });
+        }
       }
     }
-  }
-  if (found === false) {
-    res.status(404).send(`To Do with ${parseInt(req.params.id)} not found`);
-  }
+    if (found === false) {
+      res.status(404).send(`To Do with ${parseInt(req.params.id)} not found`);
+    }
+  });
 }
 
 app.put("/todos/:id", updateTodo);
 
 function deleteTodo(req, res) {
-  let found = false;
-  if (todos.length !== 0) {
-    for (let i = 0; i < todos.length; i++) {
-      if (todos[i].id === parseInt(req.params.id)) {
-        todos.splice(i, 1);
-        found = true;
-        res.status(200).send("To Do - Deleted");
+  fs.readFile("todos.json", "utf-8", (err, data) => {
+    if (err) throw err;
+    const todos = JSON.parse(data);
+    let found = false;
+    if (todos.length !== 0) {
+      for (let i = 0; i < todos.length; i++) {
+        if (todos[i].id === parseInt(req.params.id)) {
+          todos.splice(i, 1);
+          found = true;
+          fs.writeFile("todos.json", JSON.stringify(todos), "utf-8", () => {
+            res.status(200).json(todos[i]);
+          });
+        }
       }
     }
-  }
-  if (found === false) {
-    res.status(404).send(`To Do with ${parseInt(req.params.id)} not found`);
-  }
+    if (found === false) {
+      res.status(404).send(`To Do with ${parseInt(req.params.id)} not found`);
+    }
+  });
 }
 
 app.delete("/todos/:id", deleteTodo);
