@@ -43,8 +43,11 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const fs = require("fs");
 const { stringify } = require("querystring");
+const path = require("path");
+const cors = require("cors");
 
 const app = express();
+app.use(cors());
 const port = 3000;
 
 app.use(bodyParser.json());
@@ -151,10 +154,13 @@ function deleteTodo(req, res) {
 
 app.delete("/todos/:id", deleteTodo);
 
-// for all other routes, return 404
-app.use((req, res, next) => {
-  res.status(404).send();
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "index.html"));
 });
+// for all other routes, return 404
+// app.use((req, res, next) => {
+//   res.status(404).send();
+// });
 
 function startedFn() {
   console.log(`HTTP server is listening on ${port}`);

@@ -1,0 +1,97 @@
+#main {
+  display: inline;
+  /* justify-content: center; */
+  align-items: center;
+  text-align: center;
+  text-wrap: wrap;
+  /* max-width: 70%; */
+}
+
+#heading {
+  border-radius: 20px;
+  border: 5px solid black;
+  border-color: black;
+  background-color: beige;
+  justify-content: center;
+  text-align: center;
+  padding: 0.5%;
+  margin: 3% 25% 3% 25%;
+  box-shadow: 8px 8px;
+}
+
+#form {
+  display: inline-flex;
+  border-radius: 20px;
+  border: 5px solid black;
+  border-color: black;
+  justify-content: center;
+  text-align: center;
+  padding: 0.5;
+  margin: 0% 1% 5% 1%;
+  box-shadow: 5px 5px;
+}
+
+#todos {
+  border-radius: 20px;
+  border: 5px solid black;
+  border-color: black;
+  /* background-color: beige; */
+  justify-content: center;
+  text-align: center;
+  padding: 2.5%;
+  margin: 0% 1% 5% 1%;
+  /* width: 25%; */
+  box-shadow: 5px 5px;
+  max-width: 80%;
+  display: flex;
+}
+
+#container1 {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+}
+
+ul {
+  display: flex;
+}
+
+#deleteBtn {
+  right: 0;
+}
+
+tr {
+  margin: 5%;
+}
+
+.btn-outline-danger {
+  margin: 1%;
+}
+
+/* tr {
+  padding: 5%;
+  margin: 5%;
+} */
+
+#container2 {
+  margin: 0% 1% 5% 1%;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  /* text-align: center; */
+  text-align: center;
+  padding: 2.5%;
+  margin: 0% 1% 5% 1%;
+}
+
+.input-group.mb-3 {
+  align-items: center;
+  margin: 1% 0% 1% 0%;
+}
+
+#createBtn {
+  padding: auto;
+  margin: auto;
+  margin-right: 4%;
+  height: auto;
+}

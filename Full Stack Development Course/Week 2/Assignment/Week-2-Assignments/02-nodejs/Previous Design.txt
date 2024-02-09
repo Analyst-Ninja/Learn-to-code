@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+    <title>Todo App</title>
+  </head>
+  <body>
+    <script>
+      function createToDo() {
+        title_value = document.getElementById("title").value;
+        description_value = document.getElementById("description").value;
+        fetch("http://localhost:3000/todos", {
+          method: "POST",
+          body: JSON.stringify({
+            title: title_value,
+            description: description_value,
+          }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+          .then((data) => data.json())
+          .then((data) => {
+            console.log(data);
+            let parentElement = document.getElementById("mainArea");
+            let childElement = document.createElement("div");
+            childElement.setAttribute("id", `${data.id}`);
+            let grandChildElement1 = document.createElement("span");
+            grandChildElement1.innerHTML = data.title + " ";
+            let grandChildElement2 = document.createElement("span");
+            grandChildElement2.innerHTML = data.description + " ";
+            let grandChildElement3 = document.createElement("button");
+            grandChildElement3.innerHTML = "Delete";
+            grandChildElement3.setAttribute(
+              "onclick",
+              "deleteToDo(" + data.id + ")"
+            );
+            childElement.appendChild(grandChildElement1);
+            childElement.appendChild(grandChildElement2);
+            childElement.appendChild(grandChildElement3);
+            parentElement.appendChild(childElement);
+          });
+      }
+
+      // function removeToDo(data) {
+      //   var elementToRemove = document.getElementById(`${data.id}`);
+      //   if (elementToRemove) {
+      //     elementToRemove.remove();
+      //     console.log(data.id);
+      //     // document.getElementById(`${data.id}`).remove();
+      //   }
+      // }
+
+      function deleteToDo(id) {
+        document.getElementById(`${id}`).remove();
+        fetch("http://localhost:3000/todos/" + `${id}`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+      }
+      //     .then((data) => data.json())
+      //     .then(removeToDo);
+      // }
+
+      function getAllToDo() {
+        fetch("http://localhost:3000/todos", { method: "GET" }).then((res) =>
+          res.json().then((data) => {
+            for (let i = 0; i < data.length; i++) {
+              let parentElement = document.getElementById("mainArea");
+              let childElement = document.createElement("ul");
+              childElement.setAttribute("id", `${data[i].id}`);
+              let grandChildElement1 = document.createElement("li");
+              grandChildElement1.innerHTML =
+                data[i].title + "  " + data[i].description + " ";
+              // let grandChildElement2 = document.createElement("span");
+              // grandChildElement2.innerHTML = data[i].description + " ";
+              let grandChildElement3 = document.createElement("button");
+              grandChildElement3.setAttribute("id", "deleteBtn");
+              grandChildElement3.innerHTML = "Delete";
+              grandChildElement3.setAttribute(
+                "onclick",
+                "deleteToDo(" + data[i].id + ")"
+              );
+              childElement.appendChild(grandChildElement1);
+              // childElement.appendChild(grandChildElement2);
+              childElement.appendChild(grandChildElement3);
+              parentElement.appendChild(childElement);
+            }
+          })
+        );
+      }
+
+      getAllToDo();
+    </script>
+    <div id="main">
+      <h1 id="heading">ToDo App</h1>
+      <br />
+      <div id="container">
+        <form id="form">
+          <div
+            style="
+              border-radius: 15px;
+              border: 2px solid black;
+              padding: 8px;
+              margin: 0% 25% 0% 25%;
+              box-shadow: 3px 3px;
+            "
+          >
+            Title
+          </div>
+          <!-- <input type="text" id="title" /> -->
+          <div class="input-group mb-3">
+            <!-- <span class="input-group-text">Title</span> -->
+            <input
+              id="title"
+              type="text"
+              class="form-control"
+              aria-label="Sizing example input"
+              aria-describedby="inputGroup-sizing-default"
+              style="margin: 20px; border-radius: 10px"
+            />
+          </div>
+          <div
+            style="
+              border-radius: 15px;
+              border: 2px solid black;
+              padding: 8px;
+              margin: 0% 25% 0% 25%;
+              box-shadow: 3px 3px;
+            "
+          >
+            Description
+          </div>
+          <!-- <input type="text" id="description" /> -->
+          <div class="input-group mb-3">
+            <!-- <span class="input-group-text">Title</span> -->
+            <input
+              id="description"
+              type="text"
+              class="form-control"
+              aria-label="Sizing example input"
+              aria-describedby="inputGroup-sizing-default"
+              style="margin: 20px; border-radius: 10px"
+            />
+          </div>
+
+          <!-- <button id="btn" onclick="createToDo()">Create Todo</button> -->
+          <button
+            id="btn"
+            type="button"
+            class="btn btn-success"
+            onclick="createToDo()"
+          >
+            Create
+          </button>
+          <br />
+          <br />
+        </form>
+        <div id="todos">
+          <div id="mainArea"></div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
+
+<!-- CORS Error - Cross Origin Resource Sharing -->
