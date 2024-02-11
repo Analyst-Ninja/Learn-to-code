@@ -18,7 +18,7 @@ function App() {
         <div className="items-center flex justify-center">
           <div className="bg-gray-400 text-center align-middle p-8 rounded-2xl opacity-80 border-solid border-spacing-6 border-4 border-b-2 border-t-2 border-black shadow-2xl">
             {InputBox("From", "px-2", false)}
-            {InputBox(`{" "} To {' '}`, '"padding" : 8px', true)}
+            {InputBox(`To`, '"padding" : 8px', true)}
             {SubmitButton("Submit")}
           </div>
         </div>

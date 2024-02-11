@@ -30,15 +30,15 @@
     Example: PUT http://localhost:3000/todos/123
     Request Body: { "title": "Buy groceries", "completed": true }
     
-  5. DELETE /todos/:id - Delete a todo item by ID
+    5. DELETE /todos/:id - Delete a todo item by ID
     Description: Deletes a todo item identified by its ID.
     Response: 200 OK if the todo item was found and deleted, or 404 Not Found if not found.
     Example: DELETE http://localhost:3000/todos/123
-
+    
     - For any other route not defined in the server return 404
-
-  Testing the server - run `npm run test-todoServer` command in terminal
- */
+    
+    Testing the server - run `npm run test-todoServer` command in terminal
+    */
 const express = require("express");
 const bodyParser = require("body-parser");
 const fs = require("fs");
@@ -49,6 +49,7 @@ const cors = require("cors");
 const app = express();
 app.use(cors());
 const port = 3000;
+// app.use(express.static(path.join(__dirname + "/")));
 
 app.use(bodyParser.json());
 
