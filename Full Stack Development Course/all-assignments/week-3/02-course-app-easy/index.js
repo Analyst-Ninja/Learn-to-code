@@ -27,17 +27,18 @@ function authenticator(list, username, password) {
 
 function findCourse(id) {
   for (let i = 0; i < COURSES.length; i++) {
-    if (COURSES[i]["courseId"] === id) {
+    if (parseInt(COURSES[i]["courseId"]) === id) {
       return i;
-    } else return -1;
+    }
   }
+  return -1;
 }
 
 // Admin routes
 app.post("/admin/signup", (req, res) => {
   // logic to sign up admin
   if (userAlreadyExists(ADMINS, req.headers.username))
-    res.send({ message: "User Already Exists" });
+    res.send({ message: "Admin Already Exists" });
   else {
     ADMINS.push({
       username: req.headers.username,
@@ -65,7 +66,6 @@ app.post("/admin/courses", (req, res) => {
       published: req.body.published,
       courseId: COURSES.length + 1,
     });
-    console.log(COURSES);
     res.status(201).send({
       message: "Course created successfully",
       courseId: COURSES.length,
@@ -77,7 +77,6 @@ app.put("/admin/courses/:courseId", (req, res) => {
   // logic to edit a course
   if (authenticator(ADMINS, req.headers.username, req.headers.password)) {
     let index = findCourse(parseInt(req.params.courseId));
-    console.log(index);
     if (index === -1) res.status(200).send({ message: "Course not found" });
     else {
       COURSES[index] = {
@@ -88,8 +87,6 @@ app.put("/admin/courses/:courseId", (req, res) => {
         published: req.body.published,
         courseId: parseInt(req.params.courseId),
       };
-      console.log(COURSES[index]);
-      console.log(COURSES);
       res.status(200).send({ message: "Course updated successfully" });
     }
   } else res.send({ message: "Wrong username / passowrd" });
@@ -97,27 +94,58 @@ app.put("/admin/courses/:courseId", (req, res) => {
 
 app.get("/admin/courses", (req, res) => {
   // logic to get all courses
+  if (authenticator(ADMINS, req.headers.username, req.headers.password)) {
+    res.send(COURSES);
+  } else res.status(404).send("Course Not Found");
 });
 
 // User routes
 app.post("/users/signup", (req, res) => {
   // logic to sign up user
+  if (userAlreadyExists(USERS, req.headers.username))
+    res.send({ message: "User Already Exists" });
+  else {
+    USERS.push({
+      username: req.headers.username,
+      password: req.headers.password,
+    });
+    res.status(201).send({ message: "User created successfully" });
+  }
 });
 
 app.post("/users/login", (req, res) => {
   // logic to log in user
+  if (authenticator(USERS, req.headers.username, req.headers.password)) {
+    res.status(200).send({ message: "Logged in successfully" });
+  } else res.status(200).send({ message: "Wrong username / password" });
 });
 
 app.get("/users/courses", (req, res) => {
   // logic to list all courses
+  if (authenticator(USERS, req.headers.username, req.headers.password)) {
+    res.status(200).send(COURSES);
+  } else res.status(404).send("Course Not Found");
 });
 
 app.post("/users/courses/:courseId", (req, res) => {
   // logic to purchase a course
+  if (authenticator(USERS, req.headers.username, req.headers.password)) {
+    let index = findCourse(parseInt(req.params.courseId));
+    if (index === -1) res.status(200).send({ message: "Course not found" });
+    else {
+      COURSES[index].purchased = true;
+      res.status(200).send({ message: "Course purchased successfully" });
+    }
+  } else res.send({ message: "Wrong username / passowrd" });
 });
 
 app.get("/users/purchasedCourses", (req, res) => {
   // logic to view purchased courses
+  purchasedCourses = [];
+  for (let i = 0; i < COURSES.length; i++) {
+    if (COURSES[i].purchased === true) purchasedCourses.push(COURSES[i]);
+  }
+  res.status(200).send(purchasedCourses);
 });
 
 app.listen(3000, () => {
